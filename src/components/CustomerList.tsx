@@ -8,11 +8,11 @@ function CustomerList(){
     const columns: GridColDef[]= [
         {field: "firstname", headerName:"First name"},
         {field: "lastname", headerName: "Last name"},
-        {field: "streetaddress", headerName: "Street address", flex: 1},
+        {field: "streetaddress", headerName: "Street address", flex: 2},
         {field: "postcode", headerName: "Post code"},
         {field: "city", headerName: "City"},
-        {field: "email", headerName: "Email"},
-        {field: "phone", headerName: "Phone"},
+        {field: "email", headerName: "Email", flex: 2},
+        {field: "phone", headerName: "Phone", flex: 2},
         {
             field:"_links.self.href",
             headerName: "", 
@@ -29,7 +29,7 @@ function CustomerList(){
     ]
 
     const fetchCustomers = () => {
-        fetch(import.meta.env.VITE_API_URL + "/customers")
+        fetch(import.meta.env.VITE_API_URL + "customers")
         .then((response) => {
             if(!response.ok){
                 throw new Error("Error when fetching customers")
@@ -47,12 +47,12 @@ function CustomerList(){
     return(
         <>
             <h1>Customers</h1>
-            <div>
+            <div style={{width: '90', height: 500, marginTop: 10}}>
                 <DataGrid
                     rows={customers || []}
                     columns={columns}
                     autoPageSize
-                    getRowId={(row) => row._links.customers.href}
+                    getRowId={(row) => row._links.self.href}
                 />
             </div>
         </>
