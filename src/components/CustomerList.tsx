@@ -1,6 +1,9 @@
 import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import type { Customers } from "../types/Customers"
 import { useEffect, useState } from "react"
+import { Snackbar } from "@mui/material";
+import IconButton from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import AddCar from "./AddCustomer";
 
 function CustomerList(){
