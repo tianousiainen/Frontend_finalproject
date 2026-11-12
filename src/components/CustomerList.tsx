@@ -1,6 +1,7 @@
 import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import type { Customers } from "../types/Customers"
 import { useEffect, useState } from "react"
+import AddCar from "./AddCustomer";
 
 function CustomerList(){
     const [customers, setCustomers] = useState<Customers[] | null>();
@@ -47,6 +48,7 @@ function CustomerList(){
     return(
         <>
             <h1>Customers</h1>
+            <AddCar fetchCustomers={fetchCustomers} />
             <div style={{width: '90', height: 500, marginTop: 10}}>
                 <DataGrid
                     rows={customers || []}
