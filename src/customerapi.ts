@@ -13,3 +13,13 @@ export const addCustomer = async (customer: Customers) => {
     }
     return response.json();
 };
+
+export function deleteCustomer(url: string){
+    return fetch(url, {method: 'DELETE'})
+    .then(response => {
+        if(!response.ok){
+            throw new Error("Error when deleting a customer")
+        }
+        return response.json().catch(() => null);
+    })
+}

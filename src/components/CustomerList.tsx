@@ -1,13 +1,17 @@
 import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import type { Customers } from "../types/Customers"
+import type {GridRenderCellParams} from "@mui/x-data-grid";
 import { useEffect, useState } from "react"
 import { Snackbar } from "@mui/material";
-import IconButton from "@mui/material";
+import {IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCar from "./AddCustomer";
+import { deleteCustomer } from "../customerapi";
+import UpdateCustomer from "./UpdateCustomer";
 
 function CustomerList(){
     const [customers, setCustomers] = useState<Customers[] | null>();
+    const [open, setOpen] = useState(false);
 
     const columns: GridColDef[]= [
         {field: "firstname", headerName:"First name"},
@@ -20,10 +24,16 @@ function CustomerList(){
         {
             field:"_links.self.href",
             headerName: "", 
+            renderCell: (params: GridRenderCellParams) =>
+                <IconButton onClick={() => handleDelete(params.row._links.self.href)}>
+                    <DeleteIcon color="error" />
+                </IconButton>
         },
-        {
+         {
             field:"_links.customer.href",
-            headerName: "",
+            headerName: "", 
+            renderCell: (params: GridRenderCellParams) =>
+                <UpdateCustomer fetchCustomers={fetchCustomers} Customers={params.row} />
         },
         {
             field:"_links.trainings.href",
@@ -48,6 +58,17 @@ function CustomerList(){
         fetchCustomers();
     },[]);
 
+    const handleDelete = (url: string) => {
+        if(window.confirm("Are you sure?")){
+            deleteCustomer(url)
+            .then(() => {
+                fetchCustomers();
+                setOpen(true)
+            })
+            .catch((err) => console.log(err))
+        }
+    }
+
     return(
         <>
             <h1>Customers</h1>
@@ -60,6 +81,12 @@ function CustomerList(){
                     getRowId={(row) => row._links.self.href}
                 />
             </div>
+            <Snackbar
+                open={open}
+                message="Customer deleted successfully"
+                autoHideDuration={3000}
+                onClose={() => setOpen(false)}
+                />
         </>
     )
 }
