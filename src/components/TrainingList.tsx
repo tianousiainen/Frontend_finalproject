@@ -1,8 +1,11 @@
-
 import { useEffect, useState } from "react";
 import type { Trainings } from "../types/Trainings";
-import type { Customers } from "../types/Customers";
-import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import { DataGrid, type GridColDef, type GridRenderCellParams } from "@mui/x-data-grid";
+import AddTraining from "./AddTraining";
+import { deleteTrainings } from "../trainingapi";
+import { Snackbar } from "@mui/material";
+import {IconButton} from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type TrainingsWithCustomers = Trainings & {
     customerName: string;
@@ -12,6 +15,7 @@ function TrainingList() {
     const API_URL = (import.meta.env.VITE_API_URL as string).replace(/\/+$/, "");
 
     const [trainings, setTrainings] = useState<TrainingsWithCustomers[]>([]);
+    const [open, setOpen] = useState(false);
 
     const columns: GridColDef[] = [
         {
@@ -24,46 +28,52 @@ function TrainingList() {
         { field: "duration", headerName: "Duration (min)", flex: 1 },
         { field: "activity", headerName: "Activity", flex: 2 },
         { field: "customerName", headerName: "Customer", flex: 1 },
+        {
+            field:"_links.self.href",
+            headerName: "", 
+            renderCell: (params: GridRenderCellParams) =>
+                <IconButton onClick={() => handleDelete(params.row._links.self.href)}>
+                    <DeleteIcon color="error" />
+                </IconButton>
+        }
     ];
 
     const fetchData = async () => {
         try {
-            const [trainingResponse, customerResponse] = await Promise.all([
-                fetch(API_URL + "/trainings"),
-                fetch(API_URL + "/customers"),
-            ]);
+            const trainingResponse = await fetch(API_URL + "/trainings");
 
-            if (!trainingResponse.ok || !customerResponse.ok) {
-                throw new Error("Error when fetching data");
+            if (!trainingResponse.ok) {
+                throw new Error("Error when fetching trainings");
             }
 
             const trainingData = await trainingResponse.json();
-            const customerData = await customerResponse.json();
+            const trainingList: Trainings[] = trainingData._embedded?.trainings ?? [];
 
-            const trainingList: Trainings[] = trainingData._embedded.trainings;
-            const customerList: Customers[] = customerData._embedded.customers;
+            const trainingsWithCustomers: TrainingsWithCustomers[] = await Promise.all(
+                trainingList.map(async (training) => {
+                    const customerUrl = training._links?.customer?.href;
 
-        const trainingsWithCustomers: TrainingsWithCustomers[] =
-            await Promise.all(
-            trainingList.map(async (training) => {
-                const customerUrl = training._links?.customer.href;
+                    if (!customerUrl) {
+                        return { ...training, customerName: "Unknown" };
+                    }
 
-                if (!customerUrl) {
-                    return { ...training, customerName: "Unknown" };
-                }
-
-                const response = await fetch(customerUrl);
-                const customer = await response.json();
-
-                return {
-                    ...training,
-                    customerName: customer.firstname + " " + customer.lastname,
-                };
-            })
-        );
+                    try {
+                        const response = await fetch(customerUrl);
+                        if (!response.ok) {
+                            return { ...training, customerName: "Unknown" };
+                        }
+                        const customer = await response.json();
+                        return {
+                            ...training,
+                            customerName: customer.firstname + " " + customer.lastname,
+                        };
+                    } catch {
+                        return { ...training, customerName: "Unknown" };
+                    }
+                })
+            );
 
             setTrainings(trainingsWithCustomers);
-
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -73,9 +83,22 @@ function TrainingList() {
         fetchData();
     }, []);
 
+    const handleDelete = (url: string) => {
+        if(window.confirm("Are you sure?")){
+            deleteTrainings(url)
+            .then(() => {
+                fetchData();
+                setOpen(true)
+            })
+            .catch((err) => console.log(err))
+        }
+    }
+    
+
     return (
         <>
             <h1>Trainings</h1>
+            <AddTraining fetchTrainings={fetchData} />
 
             <div style={{ width: "90%", height: 500, marginTop: 10 }}>
                 <DataGrid
@@ -85,6 +108,13 @@ function TrainingList() {
                     getRowId={(row) => row._links?.self.href ?? row.activity + String(row.date)}
                 />
             </div>
+
+            <Snackbar
+                open={open}
+                message="Training deleted successfully"
+                autoHideDuration={3000}
+                onClose={() => setOpen(false)}
+                />
         </>
     );
 }

@@ -4,7 +4,7 @@ export type Trainings={
     date: Dayjs;
     duration: number;
     activity: string;
-    customerName?: string;
+    customer?: string;
     _links?: {
         self:{
             href: string;
