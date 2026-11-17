@@ -2,12 +2,13 @@ import { DataGrid, type GridColDef } from "@mui/x-data-grid"
 import type { Customers } from "../types/Customers"
 import type {GridRenderCellParams} from "@mui/x-data-grid";
 import { useEffect, useState } from "react"
-import { Snackbar } from "@mui/material";
+import { Button, Snackbar, Box } from "@mui/material";
 import {IconButton} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCar from "./AddCustomer";
 import { deleteCustomer } from "../customerapi";
 import UpdateCustomer from "./UpdateCustomer";
+import { exportToCsv } from "../utils/ExportToCsv";
 
 function CustomerList(){
     const [customers, setCustomers] = useState<Customers[] | null>();
@@ -71,8 +72,28 @@ function CustomerList(){
 
     return(
         <>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                    mt: -5,
+                    mr: 2
+                    }}
+                >
+                <AddCar fetchCustomers={fetchCustomers} />
+
+                <Button
+                    variant="contained"
+                    onClick={() => exportToCsv("customers.csv", customers || [])}
+                    sx={{mt : 2}}>
+                    Export CSV
+                </Button>
+            </Box>
+
             <h1>Customers</h1>
-            <AddCar fetchCustomers={fetchCustomers} />
+
             <div style={{width: '90', height: 500, marginTop: 10}}>
                 <DataGrid
                     rows={customers || []}
@@ -81,6 +102,7 @@ function CustomerList(){
                     getRowId={(row) => row._links.self.href}
                 />
             </div>
+
             <Snackbar
                 open={open}
                 message="Customer deleted successfully"
