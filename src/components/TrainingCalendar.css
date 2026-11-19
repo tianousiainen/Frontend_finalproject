@@ -1,0 +1,28 @@
+/* tuntiruudun korkeus: enemmän tilaa tapahtumille */
+.rbc-timeslot-group {
+    min-height: 120px;
+}
+
+/* tapahtuman sisältö allekkain */
+.rbc-time-view .rbc-day-slot .rbc-event {
+    flex-flow: column nowrap;
+    padding: 2px 4px;
+    overflow: hidden;
+}
+
+/* aika-akselin tuntitekstit */
+.rbc-time-gutter .rbc-label {
+    font-size: 0.8rem;
+}
+.rbc-time-view .rbc-day-slot .rbc-event-label {
+    font-size: 0.7rem !important;
+    line-height: 1.1 !important;
+}
+
+.rbc-time-view .rbc-day-slot .rbc-event-content {
+    font-size: 0.7rem !important;
+    line-height: 1.1 !important;
+    white-space: normal !important;   /* rivittyy kahdelle riville */
+    text-overflow: clip;
+    overflow: hidden;
+}

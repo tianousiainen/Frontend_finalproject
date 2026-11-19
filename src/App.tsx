@@ -7,8 +7,16 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import  CssBaseline  from '@mui/material/CssBaseline';
 import { Button } from '@mui/material';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom';
+import TrainingCalendar from './components/TrainingCalendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+const navStyle = {
+  '&.active': {
+  backgroundColor: 'rgba(255, 255, 255, 0.25)',
+  borderBottom: '2px solid white',  
+  },
+};
 
 function App() {
   return (
@@ -18,12 +26,14 @@ function App() {
 
           <AppBar position='static'>
 
-            <Toolbar>
-              <Typography variant='h6' sx={{flexGrow: 1}}>Personal trainer</Typography>
+            <Toolbar sx={{justifyContent: 'space-between'}}>
+              <Typography variant='h6' sx={{mr: 'auto'}}>Personal Trainer</Typography>
 
-              <Button color='inherit' component={Link} to="/customerlist">Customers</Button>
+              <Button color='inherit' component={NavLink} to="/customerlist" sx={navStyle}>Customers</Button>
 
-              <Button color='inherit' component={Link} to="/traininglist">Trainings</Button>
+              <Button color='inherit' component={NavLink} to="/traininglist" sx={navStyle}>Trainings</Button>
+
+              <Button color='inherit' component={NavLink} to="/trainingcalendar" sx={navStyle}>Calendar</Button>
             </Toolbar>
           </AppBar>
           <Container maxWidth={false}
@@ -35,6 +45,7 @@ function App() {
             <Routes>
               <Route path='/customerlist' element={<CustomerList/>}/>
               <Route path='/traininglist' element={<TrainingList/>}></Route>
+              <Route path='/trainingcalendar' element={<TrainingCalendar/>}></Route>
             </Routes>
           </Container>
         </CssBaseline>
