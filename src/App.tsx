@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import  CssBaseline  from '@mui/material/CssBaseline';
 import { Button } from '@mui/material';
-import { BrowserRouter, Routes, Route, Link, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import TrainingCalendar from './components/TrainingCalendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
