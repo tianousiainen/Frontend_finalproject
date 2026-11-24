@@ -2,7 +2,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { useEffect, useState, useMemo } from 'react';
 import type { Trainings } from '../types/Trainings';
 import type { ActivityTotal } from '../types/ActivityStatis';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper} from '@mui/material';
 
 function Statistics(){
     const [trainings, setTrainings] = useState<Trainings[]>([]);
