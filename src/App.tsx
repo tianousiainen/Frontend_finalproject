@@ -10,6 +10,7 @@ import { Button } from '@mui/material';
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import TrainingCalendar from './components/TrainingCalendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import Statistics from './components/Statistics';
 
 const navStyle = {
   '&.active': {
@@ -34,6 +35,8 @@ function App() {
               <Button color='inherit' component={NavLink} to="/traininglist" sx={navStyle}>Trainings</Button>
 
               <Button color='inherit' component={NavLink} to="/trainingcalendar" sx={navStyle}>Calendar</Button>
+
+              <Button color='inherit' component={NavLink} to="/statistics" sx={navStyle}>Statistics</Button>
             </Toolbar>
           </AppBar>
           <Container maxWidth={false}
@@ -46,6 +49,7 @@ function App() {
               <Route path='/customerlist' element={<CustomerList/>}/>
               <Route path='/traininglist' element={<TrainingList/>}></Route>
               <Route path='/trainingcalendar' element={<TrainingCalendar/>}></Route>
+              <Route path='/statistics' element={<Statistics/>}></Route>
             </Routes>
           </Container>
         </CssBaseline>
